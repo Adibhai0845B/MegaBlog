@@ -12,6 +12,7 @@ const PostForm = ({ post }) => {
             slug: post?.$id || "",
             content: post?.content || "",
             status: post?.status || "active",
+            specialImageAddress: post?.specialImageAddress || "",
         },
     });
 
@@ -37,6 +38,7 @@ const PostForm = ({ post }) => {
                 const dbPost = await appwriteService.updatePost(post.$id, {
                     ...data,
                     featuredImage: fileId,
+                    specialImageAddress: data.specialImageAddress,
                 });
 
                 if (dbPost) {
@@ -45,11 +47,11 @@ const PostForm = ({ post }) => {
             } else {
                 if (fileId) {
                     data.featuredImage = fileId;
-                    const dbPost = await appwriteService.createPost({ ...data, userId: userData.$id });
+                }
+                const dbPost = await appwriteService.createPost({ ...data, userId: userData.$id });
 
-                    if (dbPost) {
-                        navigate(`/post/${dbPost.$id}`);
-                    }
+                if (dbPost) {
+                    navigate(`/post/${dbPost.$id}`);
                 }
             }
         } catch (error) {
@@ -115,6 +117,12 @@ const PostForm = ({ post }) => {
                         />
                     </div>
                 )}
+                <Input
+                    label="Special Image Address :"
+                    placeholder="Special Image URL"
+                    className="mb-4"
+                    {...register("specialImageAddress")}
+                />
                 <Select
                     options={["active", "inactive"]}
                     label="Status"
